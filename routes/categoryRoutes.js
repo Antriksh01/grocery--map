@@ -2,6 +2,7 @@ import express from "express";
 import { CategoryModel } from "../models/categoryModel.js";
 const router = express.Router();
 
+// add category
 router.post("/", async (req, res) => {
   let category = new CategoryModel({
     name: req.body.name,
@@ -15,6 +16,7 @@ router.post("/", async (req, res) => {
   console.log(category);
 });
 
+// update-category
 router.put("/:id", async (req, res) => {
   try {
     const response = await CategoryModel.findByIdAndUpdate(req.params.id, {
@@ -27,6 +29,7 @@ router.put("/:id", async (req, res) => {
   } catch (error) {}
 });
 
+// get-category
 router.get("/", async (req, res) => {
   try {
     const response = await CategoryModel.find({});
@@ -36,6 +39,21 @@ router.get("/", async (req, res) => {
   }
 });
 
+// get-single-category
+router.get("/:id", async (req, res) => {
+  try {
+    const response = await CategoryModel.findById(req.params.id);
+    if (response) {
+      return res.status(200).json({ success: true, response });
+    } else {
+      return res.status(404).json({ success: false, response });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// delete-category
 router.delete("/:id", async (req, res) => {
   try {
     const response = await CategoryModel.findByIdAndRemove(req.params.id);
