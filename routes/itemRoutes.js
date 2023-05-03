@@ -1,6 +1,7 @@
 import express from "express";
 import { ItemModel } from "../models/itemsModel.js";
 import { CategoryModel } from "../models/categoryModel.js";
+import { productCategoryController } from "../controller/ItemController.js";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -19,11 +20,16 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
-  const product = await ItemModel.find(req.body).populate("category");
+router.get(`/all-products/:id`, async (req, res) => {
+  const category = await CategoryModel.findById(req.params.id);
+  const product = await ItemModel.find({
+    $in: [category],
+  });
+
   if (!product) {
     res.status(500).json({ success: false });
   }
+  console.log(product);
   res.send(product);
 });
 
@@ -85,5 +91,8 @@ router.get("/", async (req, res) => {
   }
   res.send(productList);
 });
+
+// category wise product
+router.get("/product-category/:slug", productCategoryController);
 
 export { router as itemRouter };
